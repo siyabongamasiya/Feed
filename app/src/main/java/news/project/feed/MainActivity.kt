@@ -4,49 +4,47 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import news.project.feed.View.DiscusionAreaScreen
-import news.project.feed.View.HomeScreen
-import news.project.feed.View.SignUpOrLoginScreen
-import news.project.feed.View.StoryScreen
-import news.project.feed.View.discussionarea
-import news.project.feed.View.home
-import news.project.feed.View.signupOrsignin
-import news.project.feed.View.story
-import news.project.feed.ui.theme.FeedTheme
+import androidx.navigation.toRoute
+import news.project.feed.View.DrawHomeScreen
+import news.project.feed.View.DrawSignUpOrLoginScreen
+import news.project.feed.View.DrawSignUpScreen
+import news.project.feed.View.DrawStoryScreen
+import news.project.feed.View.mainScreens
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination ="signuporsignin"){
-                composable<signupOrsignin> {
-                    SignUpOrLoginScreen()
-                }
+            DrawMainScreen()
+        }
+    }
+}
 
-                composable<home> {
-                    HomeScreen()
-                }
+@Preview
+@Composable
+fun DrawMainScreen(){
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination ="signinorsignup"){
+        composable("signinorsignup") {
+            DrawSignUpOrLoginScreen(navController)
+        }
 
-                composable<discussionarea> {
-                    DiscusionAreaScreen()
-                }
+        composable<mainScreens.signup> {
+            DrawSignUpScreen(navController)
+        }
 
-                composable<story> {
-                    StoryScreen()
-                }
-            }
+        composable<mainScreens.home> {
+            DrawHomeScreen(navController)
+        }
+
+        composable<mainScreens.story> {
+            val route = it.toRoute<mainScreens.story>()
+            DrawStoryScreen(route.id,navController)
         }
     }
 }
